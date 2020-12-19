@@ -9,9 +9,12 @@
     "@testing-library/react": "^11.2.2",
     "@testing-library/user-event": "^12.6.0",
     "bootstrap": "^4.5.3",
+    "classnames": "^2.2.6",
     "firebase": "^8.2.0",
+    "firebase-admin": "^9.4.2",
     "firebase-tools": "^9.0.1",
     "hoist-non-react-statics": "^3.3.2",
+    "lodash": "^4.17.20",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-hook-form": "^6.13.1",
@@ -24,7 +27,11 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "deploy:firestore": "firebase deploy --only firestore:rules",
+    "deploy:storage": "firebase deploy --only storage:rules",
+    "deploy:hosting": "firebase deploy --only hosting",
+    "deploy": "firebase deploy"
   },
   "eslintConfig": {
     "extends": [

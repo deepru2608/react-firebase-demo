@@ -1,26 +1,36 @@
 import { CircularProgress } from '@material-ui/core';
 import React, { useState } from 'react';
 import { useForm } from "react-hook-form";
-import { signup } from '../firebase/auth';
+import { login } from '../firebase/auth';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 
-function Signup(props) {
+function Login(props) {
     const { register, handleSubmit, reset, errors } = useForm();
     const [isLoading, setIsLoading] = useState(false);
 
+    const routeOnLogin = async (user) => {
+        const token = await user.getIdTokenResult();
+        if (token.claims.admin) {
+            props.history.push('/users');
+        } else {
+            props.history.push(`/profile/${user.uid}`);
+        }
+    }
+
     const onSubmit = async (data) => {
-        let newUser;
+        let user;
         setIsLoading(true);
         try {
-            newUser = await signup(data);
+            user = await login(data);
             reset();
+            console.info("Success");
         } catch (error) {
             console.log(error);
         }
 
-        if (newUser) {
-            props.history.push(`/profile/${newUser.uid}`);
+        if (user) {
+            await routeOnLogin(user);
         } else {
             setIsLoading(false);
         }
@@ -30,24 +40,6 @@ function Signup(props) {
         <div className="jumbotron bg-light">
             <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="row">
-                    <div className="col-sm-6">
-                        <div className="form-group">
-                            <label>First Name</label>
-                            <input type="text" className={classNames("form-control", { "is-invalid": errors.firstName })}
-                                name="firstName" placeholder="First Name"
-                                ref={register({ required: 'Please enter your first name!' })} />
-                            <small className="form-text text-danger">{errors.firstName && errors.firstName.message}</small>
-                        </div>
-                    </div>
-                    <div className="col-sm-6">
-                        <div className="form-group">
-                            <label>Last Name</label>
-                            <input type="text" className={classNames("form-control", { "is-invalid": errors.lastName })}
-                                name="lastName" placeholder="Last Name"
-                                ref={register({ required: 'Please enter your last name!' })} />
-                            <small className="form-text text-danger">{errors.lastName && errors.lastName.message}</small>
-                        </div>
-                    </div>
                     <div className="col-sm-6">
                         <div className="form-group">
                             <label>Email Address</label>
@@ -79,13 +71,13 @@ function Signup(props) {
                     <div className="col-sm-12 text-center mt-2">
                         <div className="d-flex justify-content-center">
                             <div className="p-2">
-                                <button type="submit" className="btn btn-primary btn-sm">Sign Up</button>
+                                <button type="submit" className="btn btn-primary btn-sm">Login</button>
                             </div>
                             <div className="p-2">
                                 {isLoading ? <CircularProgress size={20} /> : ''}
                             </div>
                             <div className="p-2">
-                                <Link to="/login" className="nav-link">Login</Link>
+                                <Link to="/signup" className="nav-link">Sign Up</Link>
                             </div>
                         </div>
                     </div>
@@ -95,4 +87,4 @@ function Signup(props) {
     )
 }
 
-export default Signup
+export default Login

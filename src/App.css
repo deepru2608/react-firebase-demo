@@ -36,3 +36,29 @@
     transform: rotate(360deg);
   }
 }
+
+.profile-image {
+  padding: 20px;
+}
+
+.profile-image img {
+  width: 100%;
+  height: auto;
+}
+
+.file-input {
+  display: none;
+}
+
+.upload-photo-btn {
+  margin-top: 3px;
+  float: right;
+}
+
+.is-admin {
+  background-color: #0C98E2;
+}
+
+.is-not-admin {
+  background-color: #22CC7E;
+}

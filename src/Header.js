@@ -14,6 +14,10 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import MailIcon from '@material-ui/icons/Mail';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon from '@material-ui/icons/MoreVert';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import { Link, useHistory } from "react-router-dom";
+import { logout } from "./firebase/auth";
+import { useSession } from './firebase/UserProvider';
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -83,9 +87,16 @@ function Header() {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
-
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+
+  const history = useHistory();
+  const { user } = useSession();
+
+  const logoutUser = async () => {
+    await logout();
+    history.push('/login');
+  };
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -158,6 +169,14 @@ function Header() {
         </IconButton>
         <p>Profile</p>
       </MenuItem>
+      { !!user &&
+        <MenuItem onClick={logoutUser}>
+          <IconButton color="inherit">
+            <ExitToAppIcon />
+          </IconButton>
+          <p>Logout</p>
+        </MenuItem>
+      }
     </Menu>
   );
 
@@ -173,9 +192,11 @@ function Header() {
           >
             <MenuIcon />
           </IconButton>
-          <Typography className={classes.title} variant="h6" noWrap>
-            Material-UI
-          </Typography>
+          <Link to="/">
+            <Typography className={classes.title} variant="h6" noWrap>
+              Material-UI
+            </Typography>
+          </Link>
           <div className={classes.search}>
             <div className={classes.searchIcon}>
               <SearchIcon />
@@ -211,6 +232,11 @@ function Header() {
             >
               <AccountCircle />
             </IconButton>
+            {!!user &&
+              <IconButton color="inherit" onClick={logoutUser}>
+                <ExitToAppIcon />
+              </IconButton>
+            }
           </div>
           <div className={classes.sectionMobile}>
             <IconButton
